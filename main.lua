@@ -1,6 +1,7 @@
 -- Include all states
 require("states/StartSequence")
 require("states/Visualizer")
+require("states/Particles")
 
 -- Include required modules
 require("modules/mInputVerify")
@@ -13,16 +14,21 @@ if tablex.find(arg, "-debug") then
 end
 
 function love.load()
+  love.graphics.setBackgroundColor( .1, .1, .1, 1 )
+
 	-- Debug Mode
 	if luna.debugMode then
 		require("states/Debug")
 		addState(DebugMode, "Debug", 10)
 		enableState("Debug")
 	end
+  
+  luna.colours = {0, 0, 0, 0}
 
 	-- Add the game states for future use
 	addState(StartSequence, "StartSequence")
   addState(Visualizer, "Visualizer")
+  addState(Particles, "Particles")
 
 	-- Load the player .cfg files
 	Persistence:loadSettings()
@@ -32,7 +38,8 @@ function love.load()
 	luna:updateVideo()
 
   -- Initial game state
-	enableState("Visualizer")
+  enableState("Visualizer")
+	enableState("Particles")
 end
 
 function love.update(dt)

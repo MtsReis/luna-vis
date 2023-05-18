@@ -34,6 +34,10 @@ function DebugMode:update(dt)
 
 	fpsGraph.updateFPS(fpsInfo, dt)
 	fpsGraph.updateMem(memoryInfo, dt)
+  
+  fpsGraph.updateGraph(Info1, luna.colours[1] * 255, "Red: " .. math.floor(luna.colours[1] * 255) .. " - (" .. luna.colourTarget .. ")", dt)
+  fpsGraph.updateGraph(Info2, luna.colours[2] * 255, "Green: " .. math.floor(luna.colours[2] * 255), dt)
+  fpsGraph.updateGraph(Info3, luna.colours[3] * 255, "Blue: " .. math.floor(luna.colours[3] * 255), dt)
 
 	if (not luna.debugMode) then
 		disableState("Debug")

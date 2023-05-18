@@ -2,7 +2,7 @@ local Player = class()
 
 -- Default settings
 Player.files = love.filesystem.getDirectoryItems('music')
-Player.sel = 1
+Player.sel = 3
 Player.np = Player.files[Player.sel]
 Player.soundData = love.sound.newSoundData('music/'..Player.np)
 Player.sound = love.audio.newSource(Player.soundData)

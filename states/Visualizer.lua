@@ -44,9 +44,7 @@ function Visualizer:update(dt)
   vis:pickColour(dt)
 end
 
-function Visualizer:draw()
-  vis:drawGrid(player.np)
-  
+function Visualizer:draw()  
   vis:spectro_show()
 end
 
