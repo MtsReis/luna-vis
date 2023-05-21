@@ -4,7 +4,7 @@ function noteTrack(dt)
   time = time + dt
   if math.fmod(math.floor(time),5) == 0 then
     luna.adInfo = "----[" .. #tracks .. "]----"
-  elseif math.fmod(math.floor(time), ) == 0 then
+  elseif math.fmod(math.floor(time), 3) == 0 then
     luna.adInfo = luna.adInfo .. "\n"
   end
 
