@@ -3,7 +3,7 @@ local new = complex.new
 
 class.Visualizer()
 
-function Visualizer:load()  
+function Visualizer:load()
   player = require("modules/mMPlayer")
   vis = require("modules/mVisualizer")
 end
@@ -42,10 +42,17 @@ function Visualizer:update(dt)
 	vis.spectrum = fft( List, false )
   
   vis:pickColour(dt)
+
+  vis:updateVertices()
 end
 
-function Visualizer:draw()  
-  vis:spectro_show()
+function Visualizer:draw()
+  love.graphics.setCanvas(monitorCanvas)
+  love.graphics.clear( )
+
+    vis:spectro_show()
+
+  love.graphics.setCanvas()
 end
 
 function Visualizer:keypressed(key)

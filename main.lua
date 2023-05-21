@@ -14,6 +14,7 @@ if tablex.find(arg, "-debug") then
 end
 
 function love.load()
+  --[[ Background ]]
   love.graphics.setBackgroundColor( .1, .1, .1, 1 )
 
 	-- Debug Mode
@@ -37,9 +38,7 @@ function love.load()
 	-- Update video with the players settings
 	luna:updateVideo()
 
-  -- Initial game state
-  enableState("Visualizer")
-	enableState("Particles")
+  enableState("StartSequence")
 end
 
 function love.update(dt)

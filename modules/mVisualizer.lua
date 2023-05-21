@@ -18,6 +18,8 @@ Visualizer.screen = luna.settings.video
 Visualizer.scale = { x = math.ceil(6*Visualizer.screen.w/Size), y = 900 }
 Visualizer.win = { x=0, y=0, w=Visualizer.screen.w, h=Visualizer.screen.h }
 
+Visualizer.vertices = {}
+
 function Visualizer:pickColour(dt)
   local rgb = self.colours.spectrum
   local target = self.colours.target
@@ -55,11 +57,12 @@ function Visualizer:pickColour(dt)
   luna.colourTarget = self.colours.target
 end
 
-function Visualizer:spectro_show()
-  gr.setColor(unpack(self.colours.spectrum))
-	for i = 1, #self.spectrum/self.fr do
+function Visualizer:updateVertices()
+  self.vertices = {}
+  local freqCutoff = #self.spectrum/self.fr/1.31
+
+  for i = 1, #self.spectrum/self.fr do
 		local freq  = self.spectrum[i]:abs()
-		local freq2 = self.spectrum[i+1]:abs()
 
 		if self.scale.y*freq > self.win.h/2 then self.scale.y = (self.win.h/2)/freq end
 		if self.line then
@@ -69,17 +72,29 @@ function Visualizer:spectro_show()
       --  2,
       --  AMPLIFY * freq*math.log(i)
       --)
-			self.fr=2
-			gr.line(
-        self.win.w*math.log(i)/6+self.win.x,
-        self.screen.h - AMPLIFY * freq*math.log(i) - self.win.y,
-        self.win.w*math.log(i+1)/6+self.win.x,
-        self.screen.h - AMPLIFY * freq2*math.log(i+1) - self.win.y
+      self.fr=2
+      if (i < freqCutoff) then
+        local vertexCoord = {x = AMPLIFY * freq*math.log(i), y = self.win.h/freqCutoff*i}
+        table.insert(self.vertices, vertexCoord)
+      --[[else
+        local vertexCoord = {self.screen.w - AMPLIFY * freq*math.log(i), self.win.h/freqCutoff*(i - freqCutoff),}
+        table.insert(self.vertices, vertexCoord)]]
+      end
+    end
+  end
+end
+
+function Visualizer:spectro_show()
+  gr.setColor(unpack(self.colours.spectrum))
+
+  for i = 1, #self.vertices do
+    if self.line and self.vertices[i+1] then
+      gr.line(
+        self.vertices[i].x,
+        self.vertices[i].y,
+        self.vertices[i+1].x,
+        self.vertices[i+1].y
       )
-    else
-			self.fr=8
-			gr.ellipse( 'line', i* self.scale.x+self.win.x, self.screen.h/2,  self.scale.x/6, -self.scale.y*freq )
-			--gr.ellipse( 'line', 100*math.log(i)+win.x, screen.h/2,  2, -scale.y*freq )
     end
   end
 end
