@@ -14,7 +14,7 @@ Visualizer.spectrum = nil
 Visualizer.line = true
 Visualizer.fr = 8
 
-Visualizer.screen = luna.settings.video
+Visualizer.screen = luna.settings.monitorRes
 Visualizer.scale = { x = math.ceil(6*Visualizer.screen.w/Size), y = 900 }
 Visualizer.win = { x=0, y=0, w=Visualizer.screen.w, h=Visualizer.screen.h }
 
@@ -66,19 +66,10 @@ function Visualizer:updateVertices()
 
 		if self.scale.y*freq > self.win.h/2 then self.scale.y = (self.win.h/2)/freq end
 		if self.line then
-			--gr.rectangle('fill',
-      --  self.win.w*math.log(i)/6+self.win.x,
-      --  self.screen.h - AMPLIFY * freq*math.log(i) - self.win.y,
-      --  2,
-      --  AMPLIFY * freq*math.log(i)
-      --)
       self.fr=2
       if (i < freqCutoff) then
         local vertexCoord = {x = AMPLIFY * freq*math.log(i), y = self.win.h/freqCutoff*i}
         table.insert(self.vertices, vertexCoord)
-      --[[else
-        local vertexCoord = {self.screen.w - AMPLIFY * freq*math.log(i), self.win.h/freqCutoff*(i - freqCutoff),}
-        table.insert(self.vertices, vertexCoord)]]
       end
     end
   end

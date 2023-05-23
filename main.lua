@@ -14,9 +14,6 @@ if tablex.find(arg, "-debug") then
 end
 
 function love.load()
-  --[[ Background ]]
-  love.graphics.setBackgroundColor( .1, .1, .1, 1 )
-
 	-- Debug Mode
 	if luna.debugMode then
 		require("states/Debug")

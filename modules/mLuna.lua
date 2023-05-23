@@ -16,12 +16,19 @@ Luna.settings = {
 		vsync = true,
 		fullscreen = true
 	},
+
+  monitorRes = {
+    w = 1360,
+    h = 1020
+  },
   
   misc = {
     _tweakable = {"showMouse"},
     showMouse = true
   }
 }
+Luna.colours = nil
+Luna.colourTarget = 1
 
 -- Update video settings with the values that player defined
 function Luna:updateVideo()

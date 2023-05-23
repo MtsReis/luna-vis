@@ -1,23 +1,25 @@
 class.DebugMode()
 
 function DebugMode:load()
+  local pc = {
+    w = luna.settings.monitorRes.w/100,
+    h = luna.settings.monitorRes.h/100
+  }
 	-- Include debug libraries
 	lovebird = require("lib/lovebird")
 	fpsGraph = require "lib/FPSGraph"
 
 	-- Create informative graph
-	Info1 = fpsGraph.createGraph(200, 560)
-	Info2 = fpsGraph.createGraph(200, 590)
-	Info3 = fpsGraph.createGraph(200, 620)
-  Info4 = fpsGraph.createGraph(0, 50)
-	fpsInfo = fpsGraph.createGraph(200, 500)
-	memoryInfo = fpsGraph.createGraph(200, 530)
+	Info1 = fpsGraph.createGraph(5*pc.w, 74*pc.h)
+	Info2 = fpsGraph.createGraph(5*pc.w, 78*pc.h)
+	Info3 = fpsGraph.createGraph(5*pc.w, 82*pc.h)
+  Info4 = fpsGraph.createGraph(0, 10*pc.h)
+	fpsInfo = fpsGraph.createGraph(5*pc.w, 66*pc.h)
+	memoryInfo = fpsGraph.createGraph(5*pc.w, 70*pc.h)
 
 	-- Engine settings for Debug Mode
 	_DebugInterface.DrawOnTop = true
 	log.level = "trace"
-
-	log.info("Debug Mode [ON]")
 end
 
 function DebugMode:close()

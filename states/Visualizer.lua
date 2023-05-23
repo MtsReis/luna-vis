@@ -47,11 +47,40 @@ function Visualizer:update(dt)
 end
 
 function Visualizer:draw()
+  local polyCoords = {-1, 0}
+  -- Desenha shader map para hSync
+  love.graphics.setCanvas(hSyncMapCanvas)
+  love.graphics.clear(1, 0, 0, 1)
+
+  for i = 1, #vis.vertices do
+    if vis.line then
+
+      table.insert(polyCoords, vis.vertices[i].x - 1)
+      table.insert(polyCoords, vis.vertices[i].y)
+
+      love.graphics.setColor(0, vis.vertices[i].x/luna.settings.monitorRes.w, 0, 1)
+      love.graphics.line(
+        vis.vertices[i].x + 1,
+        vis.vertices[i].y,
+        luna.settings.monitorRes.w - 1,
+        vis.vertices[i].y
+      )
+    end
+  end
+
+  table.insert(polyCoords, -1)
+  table.insert(polyCoords, vis.vertices[#vis.vertices].y + 1)
+
+  love.graphics.setColor(0, 0, 1, 1)
+  local triangles = love.math.triangulate(polyCoords)
+
+  for i, triangle in ipairs(triangles) do
+    love.graphics.polygon("fill", triangle)
+  end
+
+  --[[ Limpa canvas antes de ir para próximo state ]]
   love.graphics.setCanvas(monitorCanvas)
-  love.graphics.clear( )
-
-    vis:spectro_show()
-
+    love.graphics.clear(0, 0, 0, 0)
   love.graphics.setCanvas()
 end
 
