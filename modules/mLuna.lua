@@ -27,8 +27,8 @@ Luna.settings = {
     showMouse = true
   }
 }
-Luna.colours = nil
-Luna.colourTarget = 1
+Luna.colours = {0, 0, 0, 1}
+Luna.colourTarget = math.random(1,7)
 
 -- Update video settings with the values that player defined
 function Luna:updateVideo()

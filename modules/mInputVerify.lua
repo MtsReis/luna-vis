@@ -6,7 +6,8 @@ InputVerify.commandList = {
 		["`"] = "console",
     ["i"] = "nextTrack",
     ["u"] = "prevTrack",
-    ["y"] = "nextVis"
+    ["y"] = "nextVis",
+    ["s"] = "screenshot"
 	}
 }
 

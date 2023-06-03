@@ -30,7 +30,6 @@ end
 function Particles:load()
   json = require "lib/json"
   tremor = 1
-  time = 0
 
   --[[
   1: Guitarra
@@ -133,25 +132,30 @@ end
 
 function Particles:draw()
   love.graphics.setCanvas(monitorCanvas)
-    for i = #psystems, 1, -1 do
-      love.graphics.draw(
-        psystems[i],
-        luna.settings.monitorRes.w/2,
-        luna.settings.monitorRes.h/2 - 13 * 4, -- Tamanho da barrinha do player
-        0,
-        luna.settings.video.w / 1366, -- Resolução a qual as partículas foram feitas
-        luna.settings.video.h / 768
-      )
-    end
-
-    -- Desenha spectrum
-    --[[ Player Foreground ]]
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(playerFg)
-    love.graphics.print(player.np, 7 * 4, luna.settings.monitorRes.h - 12 * 4, 0, 2, 1.5)
+    --[[ Player Background ]]
+      love.graphics.draw(playerBg)
+      
+      -- Partículas
+      for i = #psystems, 1, -1 do
+        love.graphics.draw(
+          psystems[i],
+          luna.settings.monitorRes.w/2,
+          luna.settings.monitorRes.h/2, -- Tamanho da barrinha do player
+          0,
+          luna.settings.video.w / 1366, -- Resolução a qual as partículas foram feitas
+          luna.settings.video.h / 768
+        )
+      end
+
+      --[[ Player Foreground ]]
+      love.graphics.draw(playerFg)
+      love.graphics.print(player.np, 7 * 4, luna.settings.monitorRes.h - 12 * 4, 0, 2, 1.5)
 
     love.graphics.setColor(unpack(vis.colours.spectrum))
-    vis:spectro_show()
+      -- Desenha spectrum
+      vis:spectro_show()
+    love.graphics.setColor(1, 1, 1, 1)
   love.graphics.setCanvas()
 end
 

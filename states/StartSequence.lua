@@ -4,41 +4,22 @@ function StartSequence:load()
   --[[ Monitor canvas ]]
   monitorCanvas = love.graphics.newCanvas(luna.settings.monitorRes.w, luna.settings.monitorRes.h)
   hSyncMapCanvas = love.graphics.newCanvas(luna.settings.monitorRes.w, luna.settings.monitorRes.h)
+  posthSyncCanvas = love.graphics.newCanvas(luna.settings.monitorRes.w, luna.settings.monitorRes.h)
+  finalMonitorCanvas = love.graphics.newCanvas(luna.settings.monitorRes.w, luna.settings.monitorRes.h)
 
   --[[ Player bg ]]
   playerBg = love.graphics.newImage("assets/images/player.png")
   playerBgD = { w = playerBg:getWidth(), h = playerBg:getHeight() }
-
   playerFg = love.graphics.newImage("assets/images/playerFg.png")
 
   relativeCenter = {
-    x = (luna.settings.video.w - luna.settings.video.h/2)/2,
-    y = luna.settings.video.h/4
+    x = ((luna.settings.video.w - luna.settings.monitorRes.w/2)/2) * 1.02,
+    y = ((luna.settings.video.h - luna.settings.monitorRes.h/2)/2 - 1) * 1.03
   }
 
-  --[[ Custom Shader ]]
-  local hSync = [[
-    uniform Image hSyncMap;
-
-    vec4 effect(vec4 colour, Image image, vec2 uvs, vec2 screen_coords) {
-      vec4 hSyncMapPixel = Texel(hSyncMap, uvs);
-
-      if (hSyncMapPixel.r == 1) {
-        return Texel(image, uvs);
-      }
-
-      if (hSyncMapPixel.b == 1) {
-        return vec4(0, 0, 0, 1);
-      }
-
-      vec2 offset = vec2(hSyncMapPixel.g, 0);
-      vec4 pixel = Texel(image, uvs - offset);
-
-      return pixel;
-    }
-  ]]
-
-  hSyncShader = love.graphics.newShader(hSync)
+  --[[ Custom Shaders ]]
+  hSyncShader = love.graphics.newShader(require("shaders/hsync"))
+  crtShader = love.graphics.newShader(require("shaders/crt"))
 end
 
 function StartSequence:close()
@@ -54,33 +35,23 @@ function StartSequence:disable()
 end
 
 function StartSequence:update()
-
 end
 
 function StartSequence:draw()
-  love.graphics.setBackgroundColor( .1, .1, .1, 1 )
+  --[[ Desenha playerBG e visualizer, aplica hSync e desenha no posthSyncCanvas ]]
+  love.graphics.setCanvas(posthSyncCanvas)
+    love.graphics.setShader(hSyncShader)
+      hSyncShader:send("hSyncMap", hSyncMapCanvas)
+      --[[ Monitor Visualizer ]]
+      love.graphics.draw(monitorCanvas)
+    love.graphics.setShader()
 
-  -- Envia para shader e o aplica
-  love.graphics.setShader(hSyncShader)
-    hSyncShader:send("hSyncMap", hSyncMapCanvas)
+  --[[ Desenha resultado na tela com shader de CRT ]]
+  love.graphics.setCanvas(finalMonitorCanvas)
+    love.graphics.setShader(crtShader)
+      love.graphics.draw(posthSyncCanvas)
+    love.graphics.setShader()
 
-    --[[ Player Background ]]
-    love.graphics.draw(playerBg,
-      relativeCenter.x,
-      relativeCenter.y,
-      0,
-      luna.settings.video.h/playerBgD.w/2,
-      luna.settings.video.h/playerBgD.h/2)
-
-    --[[ Monitor Visualizer ]]
-    love.graphics.draw(monitorCanvas,
-      relativeCenter.x,
-      relativeCenter.y,
-      0,
-      luna.settings.video.h/luna.settings.monitorRes.w/2,
-      luna.settings.video.h/luna.settings.monitorRes.h/2)
-
-  love.graphics.setShader()
   --love.graphics.draw(playerBg, 0, 0, 0, luna.settings.video.h/playerBgD.w, luna.settings.video.h/playerBgD.h)
   --love.graphics.draw(monitorCanvas)
   --love.graphics.draw(hSyncMapCanvas)
@@ -97,4 +68,7 @@ function StartSequence:draw()
 end
 
 function StartSequence:keypressed(key)
+  if key == "screenshot" then
+    finalScene:newImageData():encode("png", "tela.png")
+  end
 end
