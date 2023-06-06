@@ -10,13 +10,13 @@ function StartSequence:load()
   --[[ Player bg ]]
   playerBg = love.graphics.newImage("assets/images/player.png")
   playerBgD = { w = playerBg:getWidth(), h = playerBg:getHeight() }
-  playerFg = love.graphics.newImage("assets/images/playerFg.png")  
+  playerFg = love.graphics.newImage("assets/images/playerFg.png")
 
   relativeCenter = {
     x = ((luna.settings.video.w - luna.settings.monitorRes.w/2)/2) * 1.02,
     y = ((luna.settings.video.h - luna.settings.monitorRes.h/2)/2 - 1) * 1.03
   }
-  
+
   fgOffset = {x = 0, y = 0}
 
   --[[ Custom Shaders ]]

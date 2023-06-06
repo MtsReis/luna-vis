@@ -20,23 +20,38 @@ function love.load()
   minute = 1
   beat = 1
 
+  stages = {
+    {0, 5},
+    {3, 8},
+    {6, 33}, -- Era 210
+    {26, 262}, -- Era 203
+    {257, 502}
+  }
+
   --[[stages = {
-    {0, 20},
-    {5, 65},
-    {50, 210}, -- Era 210
+    {0, 110},
+    {95, 175},
+    {168, 210}, -- Era 210
     {203, 262}, -- Era 203
     {257, 502}
   }]]
-
-  stages = {
+  
+  --[[stages = {
     {0, 110},
     {95, 183},
     {175, 210}, -- Era 210
     {203, 262}, -- Era 203
     {257, 502}
+  }]]
+  
+  stageIII = {
+    steps = { 7.7, 1.5, 7.5, 12, 0 },
+    step = 1,
+    timer = 8,
+    saturation = 1
   }
 
-  stage = 2
+  stage = 1
   stageIntensity = 1
   monitorStage = 1
 
@@ -77,6 +92,16 @@ function love.update(dt)
   beat = 3 - math.pow(4, math.fmod(time, .5))
   time = time + dt
   minute = time > 0 and math.ceil((time + 38)/60) or 1
+  
+  -- Gerencia stage III
+  if (stage == 3 and #stageIII.steps >= stageIII.step + 1) then
+    stageIII.timer = stageIII.timer - dt
+    
+    if (stageIII.timer <= 0) then
+      stageIII.step = stageIII.step + 1
+      stageIII.timer = stageIII.steps[stageIII.step]
+    end
+  end
 
   -- Altera stage
   if time < stages[1][2] then

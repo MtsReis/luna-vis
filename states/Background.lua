@@ -11,37 +11,10 @@ function Background:load()
   --[[ monitorShadow ]]
   monitorShadowImg = love.graphics.newImage("assets/images/monitorShadow.png")
 
-  local seta = love.graphics.newImage("assets/images/arrow.png")
-  seta:setFilter("linear", "linear")
-
-  bgPs = love.graphics.newParticleSystem(seta, 336)
-  bgPs:setColors(
-    .46, 0, 1, 0,
-    .07, .07, 1, 1,
-    .40, 0, 1, .5,
-    .45, 0, 1, 0,
-    .0, .40, 1, .5,
-    .0, .40, 1, 0
-  )
-  bgPs:setDirection(0)
-  bgPs:setEmissionArea("none", 0, 0, 0, false)
-  bgPs:setEmissionRate(20)
-  bgPs:setEmitterLifetime(-1)
-  bgPs:setInsertMode("random")
-  bgPs:setLinearAcceleration(-4.13, -2.5, 4.13, 2.5)
-  bgPs:setLinearDamping(0, 0)
-  bgPs:setOffset(50, 25.5)
-  bgPs:setParticleLifetime(1.8, 16)
-  bgPs:setRadialAcceleration(0, 0)
-  bgPs:setRelativeRotation(true)
-  bgPs:setRotation(0, 0)
-  bgPs:setSizes(0.05, 0.56)
-  bgPs:setSizeVariation(1)
-  bgPs:setSpeed(0.51, 81.02)
-  bgPs:setSpin(0, 0)
-  bgPs:setSpinVariation(0)
-  bgPs:setSpread(6.29)
-  bgPs:setTangentialAcceleration(0, 0)
+  bgPs = require("particles/seta")
+  fPs = require("particles/flies")
+  
+  fpsScale = 0
 end
 
 function Background:close()
@@ -62,6 +35,13 @@ function Background:update(dt)
   if (stage == 2) then
     bgPs:update(dt)
   end
+  
+  if (stage == 3) then
+    fpsScale = fpsScale + dt
+    fPs:setEmissionArea("uniform", 400, 400 + fpsScale * 100, 0, false)
+    fPs:setLinearAcceleration(15 - fpsScale * 2, -12, 250 - fpsScale * 100, 24)
+    fPs:update(dt)
+  end
 end
 
 function Background:draw()
@@ -73,22 +53,70 @@ function Background:draw()
         love.graphics.draw(bgPs, luna.settings.video.w/2 - fgOffset.x, luna.settings.video.h/2, luna.colours[1])
 
     -- Já desenha canvas no finalScene
-    love.graphics.setCanvas(frame)
+    love.graphics.setCanvas(postShader)
       love.graphics.setColor((1 - luna.colours[1]) * stageIntensity, (1 - luna.colours[2]) * stageIntensity, (1 - luna.colours[3]) * stageIntensity, 1) -- Cor invertida
         love.graphics.draw(bgCanvas)
       love.graphics.setColor(stageIntensity, stageIntensity, stageIntensity, stageIntensity)
     love.graphics.setCanvas()
   end
+  
+  if (stage == 3) then
+    love.graphics.setCanvas(frame)
+      love.graphics.clear()
+    
+    love.graphics.setCanvas(bgCanvas)
+      love.graphics.setBlendMode("alpha")
+      love.graphics.clear()
+      local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*150 or luna.settings.video.w
+      
+      if (stageIII.step >= 4) then
+        if (stageIII.timer > 10) then -- 2 segundos de transição
+          local tranTimer = (stageIII.timer - 10)/2
+          love.graphics.setColor(tranTimer, tranTimer, tranTimer, tranTimer)
+          --love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
+        end
+      else
+        love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
+      end
+
+      -- Já desenha canvas no finalScene
+    love.graphics.setCanvas(postShader)
+      love.graphics.clear()
+      love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(bgCanvas)
+    love.graphics.setCanvas()
+  end
 
   love.graphics.setCanvas(finalScene)
   -- Desenha imagem de fundo sobre as partículas
-    if (stage == 1 or stage > 2) then --[[ STAGE 1 ]]
+    if (stage == 1 or stage == 4) then --[[ STAGE 1 & 4 ]]
         love.graphics.setColor(1, 1, 1, stageIntensity)
           love.graphics.draw(background, 0, fgOffset.y, 0, luna.settings.video.w/background:getWidth(), luna.settings.video.h/background:getHeight())
         love.graphics.setColor(1, 1, 1, 1)
-    else --[[ STAGE 2 & STAGE 3 ]]
+    elseif (stage == 2) then --[[ STAGE 2]]
       love.graphics.clear(0, 0, 0, 0)
         love.graphics.draw(monitorShadow, 0, fgOffset.y, 0, luna.settings.video.w/background:getWidth(), luna.settings.video.h/background:getHeight())
+      love.graphics.setColor(1, 1, 1, 1)
+    else  --[[ STAGE 3]]
+      love.graphics.clear(0, 0, 0, 0)
+
+      love.graphics.setColor(1, 1, 1, 1 - stageIntensity) -- Fade in
+        love.graphics.draw(background,
+          0,
+          fgOffset.y,
+          0,
+          luna.settings.video.w/background:getWidth(),
+          luna.settings.video.h/background:getHeight()
+        )
+
+      love.graphics.setColor(1, 1, 1, stageIntensity) -- Fade out
+        love.graphics.draw(monitorShadow,
+          0,
+          fgOffset.y,
+          0,
+          luna.settings.video.w/background:getWidth(),
+          luna.settings.video.h/background:getHeight()
+        )
       love.graphics.setColor(1, 1, 1, 1)
     end
   love.graphics.setCanvas()
