@@ -1,7 +1,6 @@
 class.Particles()
 
 function noteTrack(dt)
-  time = time + dt
   if math.fmod(math.floor(time),5) == 0 then
     luna.adInfo = "----[" .. #tracks .. "]----"
   elseif math.fmod(math.floor(time), 3) == 0 then
@@ -28,6 +27,13 @@ function noteTrack(dt)
 end
 
 function Particles:load()
+  --[[ Glowline ]]
+  glowline = {
+    src = love.graphics.newImage("assets/images/glowline.png"),
+    x = 0,
+    y = -400
+  }
+
   json = require "lib/json"
   tremor = 1
 
@@ -80,11 +86,11 @@ function Particles:enable()
     love.graphics.circle("fill", 50,50, 50)
   love.graphics.setCanvas()
   canvas:setFilter("linear", "linear")
-  
+
   psystems = {
-    
+
   }
-  
+
   for i = 1, 5 do
     psystems[i] = love.graphics.newParticleSystem(canvas, 500)
     psystems[i]:setDirection(i)
@@ -128,6 +134,8 @@ function Particles:update(dt)
   for i = 1, #psystems do
     psystems[i]:update(dt)
   end
+
+  glowline.y = glowline.y <= luna.settings.monitorRes.h and glowline.y + dt * 100 or -1600
 end
 
 function Particles:draw()
@@ -135,7 +143,7 @@ function Particles:draw()
     love.graphics.setColor(1, 1, 1, 1)
     --[[ Player Background ]]
       love.graphics.draw(playerBg)
-      
+
       -- Partículas
       for i = #psystems, 1, -1 do
         love.graphics.draw(
@@ -155,6 +163,10 @@ function Particles:draw()
     love.graphics.setColor(unpack(vis.colours.spectrum))
       -- Desenha spectrum
       vis:spectro_show()
+
+      -- Desenha scanline
+      love.graphics.setColor(1, 1, 1, .05)
+        love.graphics.draw(glowline.src, glowline.x, glowline.y)
     love.graphics.setColor(1, 1, 1, 1)
   love.graphics.setCanvas()
 end

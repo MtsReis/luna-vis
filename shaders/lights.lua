@@ -12,7 +12,7 @@ vec4 effect(vec4 colour, Image image, vec2 uvs, vec2 screen_coords) {
   }
   
   
-  corEscuro.xyz = corEscuro.xyz + vec3(1, 1, 1) * lightMapPixel.a * intensity;
+  corEscuro.xyz = corEscuro.xyz * intensity + vec3(1, 1, 1) * lightMapPixel.a * intensity;
   pixel = pixel * corEscuro;
 
   return pixel;

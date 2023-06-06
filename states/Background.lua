@@ -2,16 +2,27 @@ class.Background()
 
 function Background:load()
   bgCanvas = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
+  monitorShadow = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
   recCanvas = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
-  
+
   --[[ Background ]]
   background = love.graphics.newImage("assets/images/bg.png")
 
+  --[[ monitorShadow ]]
+  monitorShadowImg = love.graphics.newImage("assets/images/monitorShadow.png")
+
   local seta = love.graphics.newImage("assets/images/arrow.png")
   seta:setFilter("linear", "linear")
-  
+
   bgPs = love.graphics.newParticleSystem(seta, 336)
-  bgPs:setColors(0.46, 0.29, 1, 0, 0.07, 0, 1, 1, 0.40, 0, 1, 0.5, 0.45, 0, 1, 0)
+  bgPs:setColors(
+    .46, 0, 1, 0,
+    .07, .07, 1, 1,
+    .40, 0, 1, .5,
+    .45, 0, 1, 0,
+    .0, .40, 1, .5,
+    .0, .40, 1, 0
+  )
   bgPs:setDirection(0)
   bgPs:setEmissionArea("none", 0, 0, 0, false)
   bgPs:setEmissionRate(20)
@@ -37,32 +48,49 @@ function Background:close()
 end
 
 function Background:enable()
+  love.graphics.setCanvas(monitorShadow)
+    love.graphics.setColor(0, 0, 0, .5)
+      love.graphics.clear(0, 0, 0, 0)
+      love.graphics.draw(monitorShadowImg)
+  love.graphics.setCanvas()
 end
 
 function Background:disable()
 end
 
 function Background:update(dt)
-  bgPs:update(dt)
+  if (stage == 2) then
+    bgPs:update(dt)
+  end
 end
 
 function Background:draw()
+  --[[ STAGE 2 ]]
   -- Desenha partículas em um fundo sem clear
-  love.graphics.setCanvas(bgCanvas)
-    love.graphics.setBlendMode("alpha")
-      love.graphics.draw(bgPs, luna.settings.video.w/2, luna.settings.video.h/2, luna.colours[1])
-  
-  -- Já desenha canvas no finalScene
+  if (stage == 2) then
+    love.graphics.setCanvas(bgCanvas)
+      love.graphics.setBlendMode("alpha")
+        love.graphics.draw(bgPs, luna.settings.video.w/2 - fgOffset.x, luna.settings.video.h/2, luna.colours[1])
+
+    -- Já desenha canvas no finalScene
+    love.graphics.setCanvas(frame)
+      love.graphics.setColor((1 - luna.colours[1]) * stageIntensity, (1 - luna.colours[2]) * stageIntensity, (1 - luna.colours[3]) * stageIntensity, 1) -- Cor invertida
+        love.graphics.draw(bgCanvas)
+      love.graphics.setColor(stageIntensity, stageIntensity, stageIntensity, stageIntensity)
+    love.graphics.setCanvas()
+  end
+
   love.graphics.setCanvas(finalScene)
-    love.graphics.setColor(1 - luna.colours[1], 1 - luna.colours[2], 1 - luna.colours[3], 1) -- Cor invertida
-      love.graphics.draw(bgCanvas)
-    love.graphics.setColor(1, 1, 1, 1)
-    
-   -- Desesnha imagem de fundo sobre as partículas
-  love.graphics.setCanvas(finalScene)
-    love.graphics.setColor(1, 1, 1, 1)
-      love.graphics.draw(background, 0, --[[math.sin(player.sound:tell('samples') / 100000) * 20]]0, 0, luna.settings.video.w/background:getWidth(), luna.settings.video.h/background:getHeight())
-    love.graphics.setColor(1, 1, 1, 1)
+  -- Desenha imagem de fundo sobre as partículas
+    if (stage == 1 or stage > 2) then --[[ STAGE 1 ]]
+        love.graphics.setColor(1, 1, 1, stageIntensity)
+          love.graphics.draw(background, 0, fgOffset.y, 0, luna.settings.video.w/background:getWidth(), luna.settings.video.h/background:getHeight())
+        love.graphics.setColor(1, 1, 1, 1)
+    else --[[ STAGE 2 & STAGE 3 ]]
+      love.graphics.clear(0, 0, 0, 0)
+        love.graphics.draw(monitorShadow, 0, fgOffset.y, 0, luna.settings.video.w/background:getWidth(), luna.settings.video.h/background:getHeight())
+      love.graphics.setColor(1, 1, 1, 1)
+    end
   love.graphics.setCanvas()
 end
 
