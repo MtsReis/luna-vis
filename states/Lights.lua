@@ -96,15 +96,16 @@ function Lights:update(dt)
         end
       end
       
-      stageIII.saturation = 1
-      
-      for i = 1, 3 do
-        ghost[i].s = 1
+      if (stageIII.timer < 3) then
+        stageIII.saturation = stageIII.saturation < 1 and stageIII.saturation + dt/2.5 or 1
+        
+        for i = 1, 3 do
+          ghost[i].s = ghost[i].s < 1 and ghost[i].s + dt/2.5 or 1
+        end
       end
     end
     
     if (stageIII.step == 4) then
-      
       
     end
   end
@@ -170,7 +171,7 @@ function Lights:draw()
           love.graphics.draw(clock[minute], fgOffset.x, fgOffset.y)
         end
 
-        if (stage < 3) then -- Transição de fim do stage 4 afeta esta luz
+        if (stage < 4) then -- Transição de fim do stage 4 afeta esta luz
           love.graphics.setColor(1, 1, 1, (1 - stage*0.1 + math.random(10) * stage * 0.01))
         else
           love.graphics.setColor(1, 1, 1, (1 - stage*0.1 + math.random(10) * stage * 0.01) * lightIntensity)

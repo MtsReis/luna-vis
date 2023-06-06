@@ -20,6 +20,6 @@ vec4 effect(vec4 colour, Image image, vec2 uvs, vec2 screen_coords) {
   vec4 pixel = Texel(image, uvs);
   vec4 result = saturationMatrix(intensity) * pixel;
     
-	return  vec4(result.rgb * colour.rgb, pixel.a);
+	return  vec4(result.rgb * colour.rgb, pixel.a * colour.a);
 }
 ]]
