@@ -113,6 +113,8 @@ function love.update(dt)
         love.graphics.clear(0, 0, 0, 0)
       love.graphics.setCanvas(frame)
         love.graphics.clear(0, 0, 0, 1)
+      love.graphics.setCanvas(postShader)
+        love.graphics.clear(0, 0, 0, 1)
       love.graphics.setCanvas()
     end
 

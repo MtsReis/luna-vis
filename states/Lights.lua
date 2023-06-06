@@ -48,8 +48,9 @@ function Lights:update(dt)
   if (stage == 3) then
     if (stageIII.step == 1) then -- RedGhost sai
       if (stageIII.timer > 2.5 and stageIII.timer < 5.5) then -- 3 segundos de transição
-        local moveFactor = math.sin((stageIII.timer - 2.5)/2)
-        local opacity = math.sin((stageIII.timer - 2.5))
+        local normalize = math.pi * (stageIII.timer - 2.5) / 3
+        local moveFactor = math.sin(normalize/2)
+        local opacity = math.sin(normalize)
         ghost[1].x = ghost[1].x - moveFactor * 5
         ghost[1].o = opacity
         stageIII.saturation = opacity
@@ -58,17 +59,13 @@ function Lights:update(dt)
           ghost[1].s = ghost[1].s - opacity
         end
       end
-      
-      if (stageIII.timer < 2.5) then -- Garante valores finais
-        ghost[1].o = 0
-        ghost[1].s = 0.5
-      end
     end
     
     if (stageIII.step == 2) then -- Blue and green saem
       if (stageIII.timer > .5) then -- GREEN 1 segundo
-        local moveFactor = math.sin((stageIII.timer - .5)*math.pi/2)
-        local opacity = math.sin((stageIII.timer - .5)*math.pi)
+        local normalize = math.pi * (stageIII.timer - .5)
+        local moveFactor = math.sin(normalize/2)
+        local opacity = math.sin(normalize)
         ghost[2].x = ghost[2].x + moveFactor * 5
         ghost[2].y = ghost[2].y - moveFactor
         ghost[2].o = opacity
@@ -78,9 +75,10 @@ function Lights:update(dt)
         end
       end
       
-      if (stageIII.timer < 1) then -- GREEN 1 segundo
-        local moveFactor = math.sin(stageIII.timer*math.pi/2)
-        local opacity = math.sin(stageIII.timer*math.pi)
+      if (stageIII.timer < 1) then -- BLUE 1 segundo
+        local normalize = math.pi * stageIII.timer
+        local moveFactor = math.sin(normalize/2)
+        local opacity = math.sin(normalize)
         ghost[3].x = ghost[3].x - moveFactor * 5
         ghost[3].y = ghost[3].y - moveFactor
         ghost[3].o = opacity
@@ -92,16 +90,28 @@ function Lights:update(dt)
     end
     
     if (stageIII.step == 3) then
-      ghost[2].o = 0
-      ghost[3].o = 0
-      ghost[2].s = 0.5
-      ghost[3].s = 0.5
+      if (ghost[1].o > 0 or ghost[2].o > 0 or ghost[3].o > 0) then
+        for i = 1, 3 do
+          ghost[i].o = ghost[i].o > 0 and ghost[i].o - dt or 0
+        end
+      end
+      
+      stageIII.saturation = 1
+      
+      for i = 1, 3 do
+        ghost[i].s = 1
+      end
+    end
+    
+    if (stageIII.step == 4) then
+      
+      
     end
   end
 end
 
 function Lights:draw()
-  local lightIntensity = stageIntensity
+  local lightIntensity = (stage == 3 and stageIII.step == 4) and 1 - stageIntensity or stageIntensity
 
   -- [[ Desenha cena final ]]
   love.graphics.setCanvas(finalScene)
@@ -114,9 +124,11 @@ function Lights:draw()
             0, .48, .48)
     love.graphics.setColor(1, 1, 1, 1)
   love.graphics.setCanvas(postShader)
+    love.graphics.draw(finalScene, fgOffset.x, fgOffset.y)
+  love.graphics.setCanvas(frame)
 
     -- Aplica lightMap
-    if (stage == 1 or stage > 3) then
+    if (stage == 1 or stage == 4 or (stage == 3 and stageIII.step == 4)) then
     love.graphics.setShader(lightsShader)
       lightsShader:send("lightMap", lightsMapImage)
       lightsShader:send("intensity", ( ((1.5 + math.cos((time + 5000) * .2))/2) - flick) * lightIntensity)
@@ -126,10 +138,10 @@ function Lights:draw()
       love.graphics.setColor(ghost[1].s, ghost[2].s, ghost[3].s, 1)
     end
 
-      love.graphics.draw(finalScene, fgOffset.x, fgOffset.y)
+      love.graphics.draw(postShader)
 
       --[[ STAGE 3: GHOSTS ]]
-      if (stage == 3) then
+      if (stage == 3 and stageIII.step < 3) then
         local currShader = love.graphics.getShader()
         love.graphics.setShader()
 
@@ -153,7 +165,7 @@ function Lights:draw()
       
       
       love.graphics.setColor(1, 1, 1, (1 - stage*.1 + math.random(10) * stage * .01) * lightIntensity)
-        if (stage == 1 or stage == 4) then
+        if (stage == 1 or stage == 4 or (stage == 3 and stageIII.step == 4)) then
           love.graphics.setShader()
           love.graphics.draw(clock[minute], fgOffset.x, fgOffset.y)
         end
@@ -171,7 +183,7 @@ function Lights:draw()
         love.graphics.print(stage, 800, 350 + 200)
         love.graphics.print(fgOffset.y, 800, 375 + 200)
 
-        love.graphics.print(stageIntensity, 800, 400 + 200)
+        love.graphics.print("In: "..stageIntensity, 800, 400 + 200)
 
         love.graphics.setColor(1, 1, 1, beat - 1)
           love.graphics.print(beat, 800, 425 + 200)
@@ -181,8 +193,6 @@ function Lights:draw()
         love.graphics.print("Timer: "..stageIII.timer, 800, 475 + 200)
       love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setShader()
-  love.graphics.setCanvas(frame)
-    love.graphics.draw(postShader)
     
   love.graphics.setCanvas()
 
@@ -199,5 +209,6 @@ function Lights:keypressed(key)
     finalScene:newImageData():encode("png", "finalScene.png")
     postShader:newImageData():encode("png", "postShader.png")
     bgCanvas:newImageData():encode("png", "bgCanvas.png")
+    monitorShadow:newImageData():encode("png", "monitorShadow.png")
   end
 end

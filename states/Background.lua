@@ -79,7 +79,7 @@ function Background:draw()
         love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
       end
 
-      -- Já desenha canvas no finalScene
+    -- Já desenha canvas no finalScene
     love.graphics.setCanvas(postShader)
       love.graphics.clear()
       love.graphics.setColor(1, 1, 1, 1)
