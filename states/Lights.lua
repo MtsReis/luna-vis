@@ -104,15 +104,11 @@ function Lights:update(dt)
         end
       end
     end
-    
-    if (stageIII.step == 4) then
-      
-    end
   end
 end
 
 function Lights:draw()
-  local lightIntensity = (stage == 3 and stageIII.step == 4) and 1 - stageIntensity or stageIntensity
+  local lightIntensity = (stage == 3 and stageIII.step >= 4) and 1 - stageIntensity or stageIntensity
 
   -- [[ Desenha cena final ]]
   love.graphics.setCanvas(finalScene)
@@ -129,7 +125,7 @@ function Lights:draw()
   love.graphics.setCanvas(frame)
 
     -- Aplica lightMap
-    if (stage == 1 or stage == 4 or (stage == 3 and stageIII.step == 4)) then
+    if (stage == 1 or stage == 4 or (stage == 3 and stageIII.step >= 4)) then
     love.graphics.setShader(lightsShader)
       lightsShader:send("lightMap", lightsMapImage)
       lightsShader:send("intensity", ( ((1.5 + math.cos((time + 5000) * .2))/2) - flick) * lightIntensity)
@@ -166,7 +162,7 @@ function Lights:draw()
       
       
       love.graphics.setColor(1, 1, 1, (1 - stage*.1 + math.random(10) * stage * .01) * lightIntensity)
-        if (stage == 1 or stage == 4 or (stage == 3 and stageIII.step == 4)) then
+        if (stage == 1 or stage == 4 or (stage == 3 and stageIII.step >= 4)) then
           love.graphics.setShader()
           love.graphics.draw(clock[minute], fgOffset.x, fgOffset.y)
         end
@@ -178,20 +174,16 @@ function Lights:draw()
         end
         love.graphics.draw(powerOnImage, fgOffset.x, fgOffset.y)
 
-        love.graphics.print(minute, 800, 300 + 200)
-        love.graphics.print(time, 800, 325 + 200)
-
-        love.graphics.print(stage, 800, 350 + 200)
-        love.graphics.print(fgOffset.y, 800, 375 + 200)
-
-        love.graphics.print("In: "..stageIntensity, 800, 400 + 200)
-
-        love.graphics.setColor(1, 1, 1, beat - 1)
-          love.graphics.print(beat, 800, 425 + 200)
-        love.graphics.setColor(1, 1, 1, 1)
-        
-        love.graphics.print("Step: "..stageIII.step, 800, 450 + 200)
-        love.graphics.print("Timer: "..stageIII.timer, 800, 475 + 200)
+        --love.graphics.print(minute, 800, 300 + 200)
+        --love.graphics.print(time, 800, 325 + 200)
+        --love.graphics.print(stage, 800, 350 + 200)
+        --love.graphics.print(fgOffset.y, 800, 375 + 200)
+        --love.graphics.print("In: "..stageIntensity, 800, 400 + 200)
+        --love.graphics.setColor(1, 1, 1, beat - 1)
+        --  love.graphics.print(beat, 800, 425 + 200)
+        --love.graphics.setColor(1, 1, 1, 1)
+        --love.graphics.print("Step: "..stageIII.step, 800, 450 + 200)
+        --love.graphics.print("Timer: "..stageIII.timer, 800, 475 + 200)
       love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setShader()
     

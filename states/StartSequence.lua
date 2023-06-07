@@ -37,7 +37,7 @@ function StartSequence:disable()
 end
 
 function StartSequence:update(dt)
-  if (stage > 1 and time < stages[4][1]) then
+  if (stage > 1 and stageIII.step < 3) then
     fgOffset.y = math.sin(time / 5) * 20
   elseif (fgOffset.y > 0) then
     fgOffset.y = fgOffset.y - dt*5 > 0 and fgOffset.y - dt*5 or 0

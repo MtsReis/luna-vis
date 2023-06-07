@@ -8,7 +8,7 @@ local AMPLIFY = 2
 Visualizer.colours = {
   grid = {55, 155, 155, 256},
   spectrum = {math.random(1,255)/255, math.random(1,255)/255, math.random(1,255)/255, 256},
-  target = math.random(1,7)
+  target = 6
 }
 Visualizer.spectrum = nil
 Visualizer.line = true

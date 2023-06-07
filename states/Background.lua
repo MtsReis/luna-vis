@@ -40,6 +40,7 @@ function Background:update(dt)
     fpsScale = fpsScale + dt
     fPs:setEmissionArea("uniform", 400, 400 + fpsScale * 100, 0, false)
     fPs:setLinearAcceleration(15 - fpsScale * 2, -12, 250 - fpsScale * 100, 24)
+    fPs:setSizes(.8 + fpsScale * .2)
     fPs:update(dt)
   end
 end
@@ -69,13 +70,11 @@ function Background:draw()
       love.graphics.clear()
       local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*150 or luna.settings.video.w
       
-      if (stageIII.step >= 4) then
-        if (stageIII.timer > 10) then -- 2 segundos de transição
-          local tranTimer = (stageIII.timer - 10)/2
-          love.graphics.setColor(tranTimer, tranTimer, tranTimer, tranTimer)
-          --love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
-        end
-      else
+      if (stageIII.step == 3) then
+        local tranTimer = (stageIII.timer <= 3) and stageIII.timer/3 or 1
+        love.graphics.setColor(tranTimer, tranTimer, tranTimer, tranTimer)
+        love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
+      elseif (stageIII.step < 3) then
         love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
       end
 
