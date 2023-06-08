@@ -53,11 +53,13 @@ function Lights:update(dt)
         local opacity = math.sin(normalize)
         ghost[1].x = ghost[1].x - moveFactor * 5
         ghost[1].o = opacity
-        stageIII.saturation = opacity
+        stageIII.saturation = normalize < math.pi/2 and opacity or stageIII.saturation
         
         if (ghost[1].s > .5) then
           ghost[1].s = ghost[1].s - opacity
         end
+      elseif (stageIII.timer <= 2.5) then  
+        stageIII.saturation = stageIII.saturation > 0 and stageIII.saturation - dt or 0
       end
     end
     
@@ -159,6 +161,8 @@ function Lights:draw()
         love.graphics.setShader(currShader)
         love.graphics.setColor(r, g, b, a)
       end
+      
+      love.graphics.draw(fgCanvas, fgOffset.x, fgOffset.y)
       
       
       love.graphics.setColor(1, 1, 1, (1 - stage*.1 + math.random(10) * stage * .01) * lightIntensity)

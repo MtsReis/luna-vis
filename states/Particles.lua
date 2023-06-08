@@ -27,6 +27,7 @@ function noteTrack(dt)
 end
 
 function Particles:load()
+  bdPS = require("particles/bigDots")
   --[[ Glowline ]]
   glowline = {
     src = love.graphics.newImage("assets/images/glowline.png"),

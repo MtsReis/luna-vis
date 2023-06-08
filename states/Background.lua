@@ -2,6 +2,7 @@ class.Background()
 
 function Background:load()
   bgCanvas = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
+  fgCanvas = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
   monitorShadow = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
   recCanvas = love.graphics.newCanvas(luna.settings.video.w, luna.settings.video.h)
 
@@ -13,6 +14,8 @@ function Background:load()
 
   bgPs = require("particles/seta")
   fPs = require("particles/flies")
+  fPsFG = fPs:clone()
+  fPsFG:setEmissionRate(30)
   
   fpsScale = 0
 end
@@ -42,6 +45,11 @@ function Background:update(dt)
     fPs:setLinearAcceleration(15 - fpsScale * 2, -12, 250 - fpsScale * 100, 24)
     fPs:setSizes(.8 + fpsScale * .2)
     fPs:update(dt)
+
+    fPsFG:setEmissionArea("uniform", 400, 400 + fpsScale * 100, 0, false)
+    fPsFG:setLinearAcceleration(15 - fpsScale * 2, -12, 250 - fpsScale * 100, 24)
+    fPsFG:setSizes(.8 + fpsScale * .2)
+    fPsFG:update(dt)
   end
 end
 
@@ -76,6 +84,19 @@ function Background:draw()
         love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
       elseif (stageIII.step < 3) then
         love.graphics.draw(fPs, fPsX, luna.settings.video.h/2) -- Flies
+      end
+
+    love.graphics.setCanvas(fgCanvas)
+      love.graphics.setBlendMode("alpha")
+      love.graphics.clear()
+      local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*150 or luna.settings.video.w
+      
+      if (stageIII.step == 3) then
+        local tranTimer = (stageIII.timer <= 3) and stageIII.timer/3 or 1
+        love.graphics.setColor(tranTimer, tranTimer, tranTimer, tranTimer)
+        love.graphics.draw(fPsFG, fPsX, luna.settings.video.h/2) -- Flies
+      elseif (stageIII.step < 3) then
+        love.graphics.draw(fPsFG, fPsX, luna.settings.video.h/2) -- Flies
       end
 
     -- Já desenha canvas no finalScene

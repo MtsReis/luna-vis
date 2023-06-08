@@ -45,7 +45,7 @@ function love.load()
   }]]
   
   stageIII = {
-    steps = { 7.7, 1.5, 7.5, 12, 0 },
+    steps = { 7.7, 1.5, 12.5, 7, 0 },
     step = 1,
     timer = 8,
     saturation = 1
