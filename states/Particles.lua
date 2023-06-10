@@ -30,6 +30,8 @@ function Particles:enable()
     psystems[1][i]:setParticleLifetime(10, 11 + i)
     psystems[1][i]:setDirection(2*math.pi/4 * i)
     psystems[1][i]:setSpread(.15)
+    
+    psystems[1][i]:emit(40)
   end
 
   psystems[1][1]:setColors(1, 1, 1, 1,     0, 0, 0, 0)

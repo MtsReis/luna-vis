@@ -51,7 +51,7 @@ function love.load()
   monitorStage = 1
   monitorStageC = 0
   monitorTransition = 0
-  monitorMaxTime = 20
+  monitorMaxTime = 19
   monitorP = 1
 
 	-- Debug Mode
