@@ -4,7 +4,6 @@ require 'lib/luafft'
 require("lib/stateManager")
 require("lib/lovelyMoon")
 lip = require 'lib/LIP'
-moonshine = require 'lib/moonshine'
 tiny = require("lib/tiny")
 log = require("lib/log")
 pd = pretty.dump

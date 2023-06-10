@@ -9,6 +9,7 @@ require("states/Lights")
 require("modules/mInputVerify")
 require("modules/mPersistence")
 luna = require("modules/mLuna")
+messenger = require("modules/mMessenger")
 
 if tablex.find(arg, "-debug") then
 	luna.debugMode = true
@@ -18,15 +19,17 @@ function love.load()
   math.randomseed(os.time())
   time = 0
   minute = 1
-  beat = 1
-
-  --[[stages = {
-    {0, 5},
-    {3, 8},
-    {6, 33}, -- Era 210
-    {26, 262}, -- Era 203
-    {257, 502}
-  }]]
+  beat = {
+    intensity = 1,
+    frame = false,
+    counter = 0,
+    stages = {
+        {0, 109.7},
+        {133.5, 175.7},
+        {192, 202},
+        {236, 256}
+    }
+  }
 
   stages = {
     {0, 110},
@@ -35,14 +38,6 @@ function love.load()
     {203, 262}, -- Era 203
     {257, 502}
   }
-  
-  --[[stages = {
-    {0, 110},
-    {95, 183},
-    {175, 210}, -- Era 210
-    {203, 262}, -- Era 203
-    {257, 502}
-  }]]
   
   stageIII = {
     steps = { 7.7, 1.5, 12.5, 7, 0 },
@@ -54,6 +49,10 @@ function love.load()
   stage = 1
   stageIntensity = 1
   monitorStage = 1
+  monitorStageC = 0
+  monitorTransition = 0
+  monitorMaxTime = 20
+  monitorP = 1
 
 	-- Debug Mode
 	if luna.debugMode then
@@ -63,6 +62,7 @@ function love.load()
 	end
 
   luna.colours = {0, 0, 0, 0}
+  luna.adInfo = ""
 
 	-- Load the player .cfg files
 	Persistence:loadSettings()
@@ -89,10 +89,40 @@ function love.load()
 end
 
 function love.update(dt)
-  beat = 3 - math.pow(4, math.fmod(time, .5))
+  beat.frame = false
+  beat.intensity = 1
+  beat.counter = beat.counter + dt
   time = time + dt
   minute = time > 0 and math.ceil((time + 38)/60) or 1
+  monitorStageC = monitorStageC + dt
   
+  if (monitorStageC >= monitorMaxTime) then
+    monitorStage = monitorStage < 3 and monitorStage + 1 or 1
+    monitorStageC = 0
+  elseif (monitorStageC >= monitorMaxTime - 1) then
+    monitorTransition = monitorMaxTime - monitorStageC
+  else
+    monitorTransition = 0
+  end
+  
+  if (beat.counter >= .5) then
+    beat.counter = beat.counter - .5
+    beat.frame = true
+  end
+  
+  for i, v in ipairs(beat.stages) do -- Atualiza intensity e frame se estiver dentro de um stage
+    if (time > v[1] and time < v[2]) then
+      beat.intensity = 3 - math.pow(4, math.fmod(time, .5))      
+      break
+    else
+      beat.intensity = beat.intensity > 0 and beat.intensity - dt or 0
+    end
+    
+    if (i == #beat.stages) then -- Se verificou todos os stages e não deu break, não é frame vlido
+      beat.frame = false
+    end
+  end
+
   -- Gerencia stage III
   if (stage == 3 and #stageIII.steps >= stageIII.step + 1) then
     stageIII.timer = stageIII.timer - dt
@@ -140,6 +170,8 @@ function love.update(dt)
       stageIntensity = 1
     end
   end
+  
+  messenger:update(dt)
 
 	InputVerify:update(dt)
 	lovelyMoon.update(dt)

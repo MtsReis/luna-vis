@@ -90,4 +90,16 @@ function Visualizer:spectro_show()
   end
 end
 
+function Visualizer:ellipse_show()
+  for i = 1, #self.vertices do
+      gr.ellipse(
+        'line',
+        self.screen.w - i * 12,
+        self.screen.h/2,
+        self.scale.x/6,
+        -self.scale.y * self.vertices[i].x
+      )
+  end
+end
+
 return Visualizer

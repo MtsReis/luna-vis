@@ -177,17 +177,6 @@ function Lights:draw()
           love.graphics.setColor(1, 1, 1, (1 - stage*0.1 + math.random(10) * stage * 0.01) * lightIntensity)
         end
         love.graphics.draw(powerOnImage, fgOffset.x, fgOffset.y)
-
-        --love.graphics.print(minute, 800, 300 + 200)
-        --love.graphics.print(time, 800, 325 + 200)
-        --love.graphics.print(stage, 800, 350 + 200)
-        --love.graphics.print(fgOffset.y, 800, 375 + 200)
-        --love.graphics.print("In: "..stageIntensity, 800, 400 + 200)
-        --love.graphics.setColor(1, 1, 1, beat - 1)
-        --  love.graphics.print(beat, 800, 425 + 200)
-        --love.graphics.setColor(1, 1, 1, 1)
-        --love.graphics.print("Step: "..stageIII.step, 800, 450 + 200)
-        --love.graphics.print("Timer: "..stageIII.timer, 800, 475 + 200)
       love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setShader()
     

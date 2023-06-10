@@ -21,7 +21,10 @@ end
 function Visualizer:update(dt)
   -- Identifica fim de track
   local MusicPos = player.sound:tell('samples')
-	local MusicSize	= player.soundData:getSampleCount()
+	local MusicSize	= nil
+  if not pcall(function () MusicSize = player.soundData:getSampleCount() end) then
+    love.event.quit()
+  end
   local	Size = 1024
 
 	if MusicPos >= MusicSize - Size then
