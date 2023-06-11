@@ -1,6 +1,4 @@
-
 local new = complex.new
-
 class.Visualizer()
 
 function Visualizer:load()
@@ -20,22 +18,28 @@ end
 
 function Visualizer:update(dt)
   -- Identifica fim de track
-  local MusicPos = player.sound:tell('samples')
-	local MusicSize	= nil
-  if not pcall(function () MusicSize = player.soundData:getSampleCount() end) then
+  --local MusicPos = player.sound:tell('samples')
+  local MusicPos = samplePosition * sampleSize
+
+	musicSize	= 0
+  if not pcall(function () musicSize = player.soundData:getSampleCount() end) then
     love.event.quit()
   end
-  local	Size = 1024
 
-	if MusicPos >= MusicSize - Size then
+  --[[if (time <= 1) then
+    print("[Frame: "..currFrame.."] [samplePos: "..samplePosition.."] [Time: "..time.."]")
+    print("[SamplePos: "..MusicPos / Size.."] [MTime: " .. player.sound:tell('seconds') .. "]")
+  end]]
+
+	if MusicPos >= musicSize - sampleSize then
 		vis.scale.y = 20
 		player:next()
   end
 
   -- Atualiza spectrum
 	local List = {}
-	for i= MusicPos, MusicPos + (Size-1) do
-		if i + Size > MusicSize then i = MusicSize-Size end
+	for i= MusicPos, MusicPos + (sampleSize-1) do
+		if i + sampleSize > musicSize then i = musicSize-sampleSize end
 		if player.soundData:getChannelCount()==1 then
 			List[#List+1] = new(player.soundData:getSample(i), 0)
     else

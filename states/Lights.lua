@@ -182,19 +182,38 @@ function Lights:draw()
     
   love.graphics.setCanvas()
 
-  love.graphics.draw(frame, -love.mouse.getX(), -love.mouse.getY())
+  --love.graphics.draw(frame)
+  
+  
+  --[[ SALVA EM IMAGEM ]]
+  frame:newImageData():encode("png", "output/" .. currFrame .. ".png")
+  
+  love.graphics.print(
+    "[Frame: "..currFrame.."] | SamplePosition: "..string.format("%05d", samplePosition).." / "..musicSize/sampleSize,
+    love.graphics.getWidth()/2 - 135, love.graphics.getHeight()/2
+  )
+  
+  love.graphics.rectangle(
+    "line",
+    love.graphics.getWidth()/2 - musicSize/sampleSize * .05 / 2,
+    love.graphics.getHeight()/2 + 20,
+    musicSize/sampleSize * .05,
+    20
+  )
+  
+  love.graphics.rectangle(
+    "fill",
+    love.graphics.getWidth()/2 - musicSize/sampleSize * .05 / 2,
+    love.graphics.getHeight()/2 + 20,
+    (samplePosition/(musicSize/sampleSize)) * (musicSize/sampleSize * .05),
+    20
+  )
+  
+  love.graphics.print(
+    string.format("%.2f", (100*samplePosition)/(musicSize/sampleSize)) .. "%",
+    love.graphics.getWidth()/2 - 30, love.graphics.getHeight()/2 + 60
+  )
 end
 
 function Lights:keypressed(key)
-  if key == "screenshot" then
-    frame:newImageData():encode("png", "frame.png")
-    monitorCanvas:newImageData():encode("png", "monitorCanvas.png")
-    hSyncMapCanvas:newImageData():encode("png", "hSyncMapCanvas.png")
-    posthSyncCanvas:newImageData():encode("png", "posthSyncCanvas.png")
-    finalMonitorCanvas:newImageData():encode("png", "finalMonitorCanvas.png")
-    finalScene:newImageData():encode("png", "finalScene.png")
-    postShader:newImageData():encode("png", "postShader.png")
-    bgCanvas:newImageData():encode("png", "bgCanvas.png")
-    monitorShadow:newImageData():encode("png", "monitorShadow.png")
-  end
 end

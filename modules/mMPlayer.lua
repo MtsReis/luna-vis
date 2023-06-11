@@ -13,7 +13,7 @@ function Player:playMusic()
 	self.sound = love.audio.newSource(self.soundData)
   self.sound:setVolume(luna.settings.sound.mVolume)
 
-	self.sound:play()
+	--self.sound:play()
 end
 
 function Player:next()

@@ -1,3 +1,20 @@
+sampleSize = 1024
+
+sampleRate = 96000
+samplesPerSecond = sampleRate/sampleSize
+wastedSamples = samplesPerSecond-60
+timeLostPerFrame = wastedSamples/60
+
+DT = 1/60
+ADT = 1/samplesPerSecond
+FREQ_DIFF = ADT - DT
+
+currFrame = 0
+samplePosition = 0
+time = 0
+musicTime = 0
+musicSize	= 0
+
 -- Include all states
 require("states/StartSequence")
 require("states/Visualizer")
@@ -17,7 +34,6 @@ end
 
 function love.load()
   math.randomseed(os.time())
-  time = 0
   minute = 1
   beat = {
     intensity = 1,
@@ -89,10 +105,13 @@ function love.load()
 end
 
 function love.update(dt)
+  dt = DT
+  currFrame = currFrame + 1
+  time = time + dt
+
   beat.frame = false
   beat.intensity = 1
   beat.counter = beat.counter + dt
-  time = time + dt
   minute = time > 0 and math.ceil((time + 38)/60) or 1
   monitorStageC = monitorStageC + dt
   
@@ -155,12 +174,6 @@ function love.update(dt)
     stage = 4
   end
 
-  -- Verifica fim da exibição
-  if minute > 5 or minute < 1 then
-    minute = 1
-    love.event.quit()
-  end
-
   -- Calcula intensidade do stage de acordo com periodo de transição
   if stage < #stages then
     if (time >= stages[stage+1][1]) then
@@ -175,6 +188,14 @@ function love.update(dt)
 
 	InputVerify:update(dt)
 	lovelyMoon.update(dt)
+  
+  samplePosition = samplePosition + 1 + timeLostPerFrame
+  
+  -- Verifica fim da exibição
+  if minute > 5 or minute < 1 or samplePosition > musicSize/sampleSize then
+    minute = 1
+    love.event.quit()
+  end
 end
 
 function love.draw()
