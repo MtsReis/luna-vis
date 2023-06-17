@@ -76,7 +76,7 @@ function Background:draw()
     love.graphics.setCanvas(bgCanvas)
       love.graphics.setBlendMode("alpha")
       love.graphics.clear()
-      local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*150 or luna.settings.video.w
+      local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*100 or luna.settings.video.w
       
       if (stageIII.step == 3) then
         local tranTimer = (stageIII.timer <= 3) and stageIII.timer/3 or 1
@@ -89,7 +89,6 @@ function Background:draw()
     love.graphics.setCanvas(fgCanvas)
       love.graphics.setBlendMode("alpha")
       love.graphics.clear()
-      local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*150 or luna.settings.video.w
       
       if (stageIII.step == 3) then
         local tranTimer = (stageIII.timer <= 3) and stageIII.timer/3 or 1
