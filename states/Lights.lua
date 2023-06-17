@@ -56,7 +56,7 @@ function Lights:update(dt)
         stageIII.saturation = normalize < math.pi/2 and opacity or stageIII.saturation
         
         if (ghost[1].s > .5) then
-          ghost[1].s = ghost[1].s - opacity
+          ghost[1].s = ghost[1].s - opacity >= .5 and ghost[1].s - opacity or .5
         end
       elseif (stageIII.timer <= 2.5) then  
         stageIII.saturation = stageIII.saturation > 0 and stageIII.saturation - dt or 0
@@ -73,7 +73,7 @@ function Lights:update(dt)
         ghost[2].o = opacity
         
         if (ghost[2].s > .5) then
-          ghost[2].s = ghost[2].s - opacity
+          ghost[2].s = ghost[2].s - opacity >= .5 and ghost[2].s - opacity or .5
         end
       end
       
@@ -86,7 +86,7 @@ function Lights:update(dt)
         ghost[3].o = opacity
         
         if (ghost[3].s > .5) then
-          ghost[3].s = ghost[3].s - opacity
+          ghost[3].s = ghost[3].s - opacity >= .5 and ghost[3].s - opacity or .5
         end
       end
     end
