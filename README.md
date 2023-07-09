@@ -1,12 +1,9 @@
-# Luna Engine
-Libraries used:
+# "One day we'll know we can't forget" Visualizer
 
-* [LövelyMoon](https://love2d.org/forums/viewtopic.php?f=5&t=38702)
-* [LoveBird](https://github.com/rxi/lovebird/)
-* [FPSGraph](https://github.com/icrawler/FPSGraph)
-* [Penlight](https://stevedonovan.github.io/Penlight/api/index.html)
-* [Binser](https://github.com/bakpakin/binser)
-* [LIP](https://github.com/Dynodzzo/Lua_INI_Parser)
-* [Tiny-ECS](https://github.com/bakpakin/tiny-ecs)
-* [log.lua](https://github.com/rxi/log.lua)
-* [LoveDebug](https://github.com/flamendless/lovedebug)
+[![Watch the video](https://img.youtube.com/vi/IVhOFMa9rAo/maxresdefault.jpg)](https://youtu.be/IVhOFMa9rAo)
+
+Made with [Luna](https://github.com/MtsReis/luna) as a boilerplate
+
+Additional 3rd party libs:
+* [Complex](http://lua-users.org/wiki/LuaMatrix)
+* Lua FFT port (by Benjamin von Ardenne) from KissFFT (by Mark Borgerding)
