@@ -18,6 +18,8 @@ function Background:load()
   fPsFG:setEmissionRate(30)
   
   fpsScale = 0
+  fPsX = 0
+  
 end
 
 function Background:close()
@@ -76,7 +78,7 @@ function Background:draw()
     love.graphics.setCanvas(bgCanvas)
       love.graphics.setBlendMode("alpha")
       love.graphics.clear()
-      local fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*100 or luna.settings.video.w
+      fPsX = fpsScale*100 < luna.settings.video.w and fpsScale*150 or fPsX
       
       if (stageIII.step == 3) then
         local tranTimer = (stageIII.timer <= 3) and stageIII.timer/3 or 1
